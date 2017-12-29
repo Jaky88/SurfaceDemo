@@ -1,4 +1,4 @@
-package com.jaky.demo.surface;
+package com.jaky.demo.surface.ui;
 
 import android.graphics.Bitmap;
 
@@ -7,5 +7,5 @@ import android.graphics.Bitmap;
  */
 
 public interface SurfaceCallback {
-    void drawBitmap(Bitmap bitmap);
+    void updateSurface(Bitmap bitmap);
 }

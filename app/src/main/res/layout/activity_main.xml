@@ -5,7 +5,7 @@
 
         <variable
             name="mainModel"
-            type="com.jaky.demo.surface.MainActivityModel" />
+            type="com.jaky.demo.surface.data.model.ActivityMainModel" />
     </data>
 
     <LinearLayout
@@ -22,22 +22,6 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-
-            <Button
-                android:id="@+id/btn_extractMetadata"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:onClick="@{mainModel::onExtractMetadata}"
-                android:text="抽取封面" />
-
-            <Button
-                android:id="@+id/btn_get_thumbnail"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:onClick="@{mainModel::onGetThumbnail}"
-                android:text="显示封面" />
 
         </LinearLayout>
     </LinearLayout>
