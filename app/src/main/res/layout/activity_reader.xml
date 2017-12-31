@@ -5,7 +5,7 @@
 
         <variable
             name="mainModel"
-            type="com.jaky.demo.surface.data.model.ActivityMainModel" />
+            type="com.jaky.demo.surface.data.model.ActivityReaderModel" />
     </data>
 
     <LinearLayout

@@ -17,24 +17,27 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.ViewTreeObserver;
 
-import com.jaky.demo.surface.data.model.ActivityMainModel;
+import com.jaky.demo.surface.data.model.ActivityReaderModel;
 import com.jaky.demo.surface.R;
-import com.jaky.demo.surface.databinding.ActivityMainBinding;
+import com.jaky.demo.surface.databinding.ActivityReaderBinding;
 
-public class MainActivity extends AppCompatActivity implements SurfaceHolder.Callback {
+import java.io.File;
+
+public class ReaderActivity extends AppCompatActivity implements SurfaceHolder.Callback {
 
     private SurfaceHolder holder;
     private int screenWidth;
     private int screenHeight;
     private int surfaceHeight;
     private SurfaceView mSurfaceView;
-    private ActivityMainBinding bindingView;
+    private ActivityReaderBinding bindingView;
+    private ActivityReaderModel mainModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        bindingView = DataBindingUtil.setContentView(this, R.layout.activity_main);
-        ActivityMainModel mainModel = new ActivityMainModel(MainActivity.this, callback);
+        bindingView = DataBindingUtil.setContentView(this, R.layout.activity_reader);
+        mainModel = new ActivityReaderModel(ReaderActivity.this, callback);
         bindingView.setMainModel(mainModel);
         initView();
         initData();
@@ -68,6 +71,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
         surfaceHeight = mSurfaceView.getHeight();
+        mainModel.showCover(new File(""));
     }
 
     @Override
@@ -87,8 +91,8 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
             Paint paint = new Paint();
             paint.setColor(Color.BLACK);
             Canvas canvas = holder.lockCanvas();
+            canvas.drawColor(Color.WHITE);
             if (canvas != null && bitmap != null && !bitmap.isRecycled()) {
-                canvas.drawColor(Color.WHITE);
                 Rect srcArea = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
                 Rect destArea = new Rect(0, 0, screenWidth, surfaceHeight);
                 canvas.drawBitmap(bitmap, srcArea, destArea, paint);

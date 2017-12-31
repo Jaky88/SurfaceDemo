@@ -5,11 +5,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
 
+import com.jaky.demo.surface.R;
 import com.jaky.demo.surface.data.core.Core;
 import com.jaky.demo.surface.ui.SurfaceCallback;
 import com.onyx.android.sdk.data.cms.OnyxCmsCenter;
@@ -34,10 +36,10 @@ import io.reactivex.schedulers.Schedulers;
  * Created by jaky on 2017/12/22 0022.
  */
 
-public class ActivityMainModel {
+public class ActivityReaderModel {
 
-    private static final String TAG = ActivityMainModel.class.getSimpleName();
-    private static final String FILE_NAME = "Books/凡尔纳全集.epub";
+    private static final String TAG = ActivityReaderModel.class.getSimpleName();
+    private static final String FILE_NAME = "test.pdf";
     private static final String SERVICE_PKG_NAME = "com.onyx.kreader";
     private static final String SERVICE_CLASS_NAME = "com.onyx.kreader.ui.ReaderMetadataService";
 
@@ -45,7 +47,7 @@ public class ActivityMainModel {
     private SurfaceCallback callback;
     private final Core core;
 
-    public ActivityMainModel(Context context, SurfaceCallback callback) {
+    public ActivityReaderModel(Context context, SurfaceCallback callback) {
         this.context = context;
         this.callback = callback;
         core = Core.init();
@@ -56,7 +58,9 @@ public class ActivityMainModel {
         showCover(file);
     }
 
-    private void showCover(File file) {
+    public void showCover(File file) {
+        File file1 = new File("/sdcard/" + FILE_NAME);
+        file = file1;
         if (!file.exists()) {
             return;
         }
@@ -69,12 +73,13 @@ public class ActivityMainModel {
         return Observable.create(new ObservableOnSubscribe<Bitmap>() {
             @Override
             public void subscribe(@NonNull ObservableEmitter e) throws Exception {
-                Bitmap bitmap = loadCoverImpl(context, OnyxThumbnail.ThumbnailKind.Original, getFileMD5(file));
-                if (bitmap == null) {
-                    e.onNext(extractMetadata(context, file) ? loadCoverImpl(context, OnyxThumbnail.ThumbnailKind.Original, getFileMD5(file)) : null);
-                } else {
-                    e.onNext(bitmap);
-                }
+//                Bitmap bitmap = loadCoverImpl(context, OnyxThumbnail.ThumbnailKind.Original, getFileMD5(file));
+//                if (bitmap == null) {
+//                    e.onNext(extractMetadata(context, file) ? loadCoverImpl(context, OnyxThumbnail.ThumbnailKind.Original, getFileMD5(file)) : null);
+//                } else {
+//                    e.onNext(bitmap);
+//                }
+                e.onNext(BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher));
                 e.onComplete();
             }
         });
@@ -89,6 +94,9 @@ public class ActivityMainModel {
 
             @Override
             public void onNext(@NonNull Bitmap bitmap) {
+                if(bitmap == null){
+                    bitmap = BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher);
+                }
                 bitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
                 processBitmap(bitmap);
                 callback.updateSurface(bitmap);
