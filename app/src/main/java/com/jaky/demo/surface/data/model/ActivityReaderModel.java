@@ -12,7 +12,10 @@ import android.util.Log;
 import android.view.View;
 
 import com.jaky.demo.surface.R;
-import com.jaky.demo.surface.data.core.Core;
+import com.jaky.demo.surface.data.core.Book;
+import com.jaky.demo.surface.data.core.Page;
+import com.jaky.demo.surface.data.core.Reader;
+import com.jaky.demo.surface.ui.ReaderActivity;
 import com.jaky.demo.surface.ui.SurfaceCallback;
 import com.onyx.android.sdk.data.cms.OnyxCmsCenter;
 import com.onyx.android.sdk.data.cms.OnyxThumbnail;
@@ -45,17 +48,16 @@ public class ActivityReaderModel {
 
     private Context context;
     private SurfaceCallback callback;
-    private final Core core;
+
 
     public ActivityReaderModel(Context context, SurfaceCallback callback) {
         this.context = context;
         this.callback = callback;
-        core = Core.init();
     }
 
     public void onGetThumbnail(View view) {
         File file = new File("/sdcard/" + FILE_NAME);
-        showCover(file);
+//        showCover(file);
     }
 
     public void showCover(File file) {
@@ -79,7 +81,13 @@ public class ActivityReaderModel {
 //                } else {
 //                    e.onNext(bitmap);
 //                }
-                e.onNext(BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher));
+                Log.d("", "=======getLoadCoverObservable=================");
+                if (Reader.openBook(context, file.getAbsolutePath())) {
+                    e.onNext(Reader.getBook().getCurrentPage().getBitmap());
+                } else {
+                    e.onNext(BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher));
+                }
+
                 e.onComplete();
             }
         });
@@ -94,7 +102,7 @@ public class ActivityReaderModel {
 
             @Override
             public void onNext(@NonNull Bitmap bitmap) {
-                if(bitmap == null){
+                if (bitmap == null) {
                     bitmap = BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher);
                 }
                 bitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
@@ -163,7 +171,7 @@ public class ActivityReaderModel {
     }
 
     private void processBitmap(Bitmap bitmap) {
-        core.drawBitmap(bitmap);
+//        core.drawBitmap(bitmap);
     }
 
     private class MetadataServiceConnection implements ServiceConnection {

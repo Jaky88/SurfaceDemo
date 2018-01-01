@@ -1,11 +1,15 @@
 package com.jaky.demo.surface.data.core;
 
 import android.content.Context;
-import android.content.Intent;
+import android.support.annotation.IntDef;
+import android.util.Log;
+import android.view.WindowManager;
 
-import com.jaky.demo.surface.data.BookConfig;
-import com.jaky.demo.surface.data.Constants;
-import com.jaky.demo.surface.ui.ReaderActivity;
+import com.jaky.demo.surface.data.config.ReaderConfig;
+import com.jaky.utils.FileUtils;
+import com.jaky.utils.StringUtils;
+
+import java.util.List;
 
 /**
  * Created by Jack on 2017/12/31.
@@ -13,78 +17,93 @@ import com.jaky.demo.surface.ui.ReaderActivity;
 
 public class Reader {
 
-    private Context context;
-    public static final String INTENT_BOOK_ID = "book_id";
+    private static Book book = null;
+    private static int visableWidth;
+    private static int visableHeight;
 
-    public Reader(Context context) {
-        this.context = context;
-//        new DbAdapter(context);
+    public static void init(int width, int height) {
+        visableWidth = width;
+        visableHeight = height;
     }
 
-    public void openBook(String assetOrSdcardPath) {
-        Intent intent = getIntentFromUrl(assetOrSdcardPath, 0);
-        context.startActivity(intent);
-    }
-
-    public void openBook(int rawId) {
-        Intent intent = getIntentFromUrl(null, rawId);
-        context.startActivity(intent);
-    }
-
-    public void openBook(String assetOrSdcardPath, BookConfig BookConfig) {
-        Intent intent = getIntentFromUrl(assetOrSdcardPath, 0);
-        intent.putExtra(BookConfig.INTENT_CONFIG, BookConfig);
-        context.startActivity(intent);
-    }
-
-    public void openBook(int rawId, BookConfig BookConfig) {
-        Intent intent = getIntentFromUrl(null, rawId);
-        intent.putExtra(BookConfig.INTENT_CONFIG, BookConfig);
-        context.startActivity(intent);
-    }
-
-    public void openBook(String assetOrSdcardPath, BookConfig BookConfig, int port) {
-        Intent intent = getIntentFromUrl(assetOrSdcardPath, 0);
-        intent.putExtra(BookConfig.INTENT_CONFIG, BookConfig);
-        intent.putExtra(BookConfig.INTENT_PORT, port);
-        context.startActivity(intent);
-    }
-
-    public void openBook(int rawId, BookConfig BookConfig, int port) {
-        Intent intent = getIntentFromUrl(null, rawId);
-        intent.putExtra(BookConfig.INTENT_CONFIG, BookConfig);
-        intent.putExtra(BookConfig.INTENT_PORT, port);
-        context.startActivity(intent);
-    }
-
-    public void openBook(String assetOrSdcardPath, BookConfig BookConfig, int port, String bookId) {
-        Intent intent = getIntentFromUrl(assetOrSdcardPath, 0);
-        intent.putExtra(BookConfig.INTENT_CONFIG, BookConfig);
-        intent.putExtra(BookConfig.INTENT_PORT, port);
-        intent.putExtra(INTENT_BOOK_ID, bookId);
-        context.startActivity(intent);
-    }
-
-    public void openBook(int rawId, BookConfig BookConfig, int port, String bookId) {
-        Intent intent = getIntentFromUrl(null, rawId);
-        intent.putExtra(BookConfig.INTENT_CONFIG, BookConfig);
-        intent.putExtra(BookConfig.INTENT_PORT, port);
-        intent.putExtra(INTENT_BOOK_ID, bookId);
-        context.startActivity(intent);
-    }
-
-    private Intent getIntentFromUrl(String assetOrSdcardPath, int rawId) {
-        Intent intent = new Intent(context, ReaderActivity.class);
-        if (rawId != 0) {
-//            intent.putExtra(ReaderActivity.INTENT_EPUB_SOURCE_PATH, rawId);
-//            intent.putExtra(ReaderActivity.INTENT_EPUB_SOURCE_TYPE, FolioActivity.EpubSourceType.RAW);
-        } else if (assetOrSdcardPath.contains(Constants.ASSET)) {
-//            intent.putExtra(ReaderActivity.INTENT_EPUB_SOURCE_PATH, assetOrSdcardPath);
-//            intent.putExtra(ReaderActivity.INTENT_EPUB_SOURCE_TYPE, FolioActivity.EpubSourceType.ASSETS);
-        } else {
-//            intent.putExtra(ReaderActivity.INTENT_EPUB_SOURCE_PATH, assetOrSdcardPath);
-//            intent.putExtra(ReaderActivity.INTENT_EPUB_SOURCE_TYPE, FolioActivity.EpubSourceType.SD_CARD);
+    public static boolean initBook(Context context, String path) {
+        if (visableWidth == 0 || visableHeight == 0) {
+            WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+            int width = wm.getDefaultDisplay().getWidth();
+            int height = wm.getDefaultDisplay().getHeight();
+            visableWidth = width;
+            visableHeight = height;
         }
-        return intent;
+        String ext = FileUtils.getFileExtension(path);
+        if(StringUtils.isNullOrEmpty(ext)){
+            return false;
+        }
+
+        List list = ReaderConfig.getConfig(context).getPdfBookCategory();
+        if (ReaderConfig.getConfig(context).getPdfBookCategory().contains(ext)) {
+            book = new PdfBook(visableWidth, visableHeight);
+        } else if (ReaderConfig.getConfig(context).getPdfBookCategory().contains(ext)) {
+            book = new EpubBook(visableWidth, visableHeight);
+        }
+        if (book == null) {
+            return false;
+        }
+        return true;
+    }
+
+    public static boolean openBook(Context context, String path) {
+        return (initBook(context, path) ? book.open(context, path) : false);
+    }
+
+    public static boolean closeBook() {
+        if (book == null || book.close()) {
+            book = null;
+            return true;
+        }
+        return false;
+    }
+
+    public static boolean turnPage(Page page) {
+        return book.gotoPage(page);
+    }
+
+    public static boolean nextPage() {
+        if ((book.getCurrentPage().getPageNum() + 1) <= book.getTotalPage()) {
+            book.getCurrentPage().setPageNum(book.getCurrentPage().getPageNum() + 1);
+            return book.gotoPage(book.getCurrentPage());
+        }
+        return false;
+    }
+
+    public static boolean prePage() {
+        if ((book.getCurrentPage().getPageNum() - 1) >= 0) {
+            book.getCurrentPage().setPageNum(book.getCurrentPage().getPageNum() - 1);
+            return book.gotoPage(book.getCurrentPage());
+        }
+        return false;
+    }
+
+    public static Book getBook() {
+        return book;
+    }
+
+    public static void setBook(Book book) {
+        Reader.book = book;
+    }
+
+    public static int getVisableWidth() {
+        return visableWidth;
+    }
+
+    public static void setVisableWidth(int visableWidth) {
+        Reader.visableWidth = visableWidth;
+    }
+
+    public static int getVisableHeight() {
+        return visableHeight;
+    }
+
+    public static void setVisableHeight(int visableHeight) {
+        Reader.visableHeight = visableHeight;
     }
 }

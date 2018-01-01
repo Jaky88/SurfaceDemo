@@ -1,5 +1,11 @@
-apply plugin: 'com.android.library'
+import org.apache.tools.ant.taskdefs.condition.Os
 
+apply plugin: 'com.android.library'
+Properties properties = new Properties()
+InputStream inputStream = project.rootProject.file('local.properties').newDataInputStream()
+properties.load( inputStream )
+//读取文件
+def ndkDir = properties.getProperty('ndk.dir')
 android {
     compileSdkVersion 26
     buildToolsVersion "27.0.1"
@@ -12,6 +18,33 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        sourceSets.main {
+            jniLibs.srcDir 'src/main/libs' //set libs as .so's location instead of jniLibs
+            jni.srcDirs = [] //disable automatic ndk-build call with auto-generated Android.mk
+        }
+
+        // call regular ndk-build(.cmd) script from app directory
+        task ndkBuild(type: Exec) {
+            if (Os.isFamily(Os.FAMILY_WINDOWS)) {
+                commandLine "$ndkDir/ndk-build.cmd", '-C', file('src/main').absolutePath, 'V8_BUILD=1', '-j10'
+            } else {
+                commandLine '/opt/adt-bundle-linux/ndk/ndk-build', '-C', file('src/main').absolutePath, '-j10'
+            }
+        }
+
+        task ndkClean(type: Exec) {
+            if (Os.isFamily(Os.FAMILY_WINDOWS)) {
+                commandLine "$ndkDir/ndk-build.cmd", '-C', file('src/main').absolutePath, 'clean'
+            } else {
+                commandLine '/opt/adt-bundle-linux/ndk/ndk-build', '-C', file('src/main').absolutePath, 'clean'
+            }
+        }
+//
+//        tasks.withType(JavaCompile) {
+//            compileTask -> compileTask.dependsOn ndkBuild
+//        }
+//
+//        clean.dependsOn 'ndkClean'
 
     }
 
@@ -21,6 +54,8 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+
 
 }
 

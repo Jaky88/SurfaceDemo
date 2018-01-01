@@ -1,0 +1,11 @@
+{
+  "debug": true,
+  "pdfBookCategory": [
+    "pdf",
+    "png"
+  ],
+  "epubBookCategory": [
+    "epub",
+    "txt"
+  ]
+}

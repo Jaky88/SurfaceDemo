@@ -17,7 +17,7 @@ public class ActivityUtil {
     public static void startActivityWithData(Context context, String pkgName, File file) {
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setPackage(pkgName);
-        intent.setDataAndType(Uri.fromFile(file), FileUtil.getMimeType(file.getAbsolutePath()));
+        intent.setDataAndType(Uri.fromFile(file), FileUtils.getMimeType(file.getAbsolutePath()));
         context.startActivity(intent);
     }
 
