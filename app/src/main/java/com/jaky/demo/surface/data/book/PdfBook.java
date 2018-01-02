@@ -1,9 +1,14 @@
 package com.jaky.demo.surface.data.book;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Rect;
+import android.util.Log;
 
 import com.jaky.mupdf.core.MuPDFCore;
+import com.jaky.utils.FileUtils;
+
+import java.io.File;
 
 /**
  * Created by Jack on 2017/12/31.
@@ -37,19 +42,16 @@ public class PdfBook extends Book {
         return true;
     }
 
-    @Override
-    public boolean close() {
-        return false;
-    }
 
     @Override
     public boolean gotoPage(Page page) {
+        Log.d("","================gotoPage======================");
         core.drawPage(page.getBitmap(), page.getPageNum(),
                 page.getWidth(), page.getHeight(),
                 page.getLeft(), page.getTop(),
                 page.getWidth(), page.getHeight(),
                 core.new Cookie());
-        return false;
+        return true;
     }
 
 

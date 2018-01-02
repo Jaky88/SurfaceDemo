@@ -72,7 +72,7 @@ public class Reader {
             book.getCurrentPage().setPageNum(book.getCurrentPage().getPageNum() + 1);
             return book.gotoPage(book.getCurrentPage());
         }
-        return false;
+        return true;
     }
 
     public static boolean prePage() {
@@ -80,7 +80,7 @@ public class Reader {
             book.getCurrentPage().setPageNum(book.getCurrentPage().getPageNum() - 1);
             return book.gotoPage(book.getCurrentPage());
         }
-        return false;
+        return true;
     }
 
     public static Book getBook() {

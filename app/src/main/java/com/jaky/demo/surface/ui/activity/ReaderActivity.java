@@ -9,13 +9,17 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.KeyEvent;
 import android.view.SurfaceHolder;
 import android.widget.Toast;
 
 import com.jaky.demo.surface.R;
 import com.jaky.demo.surface.data.binding.ActivityReaderModel;
 import com.jaky.demo.surface.data.book.Reader;
+import com.jaky.demo.surface.data.rx.ObservableFactory;
+import com.jaky.demo.surface.data.rx.ObserverFactory;
 import com.jaky.demo.surface.databinding.ActivityReaderBinding;
+import com.jaky.demo.surface.ui.handler.HandlerManager;
 
 import java.io.File;
 
@@ -31,7 +35,7 @@ public class ReaderActivity extends AppCompatActivity implements SurfaceHolder.C
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         bindingView = DataBindingUtil.setContentView(this, R.layout.activity_reader);
-        mainModel = new ActivityReaderModel(ReaderActivity.this, callback);
+        mainModel = new ActivityReaderModel(ReaderActivity.this);
         bindingView.setMainModel(mainModel);
         initView();
     }
@@ -39,6 +43,8 @@ public class ReaderActivity extends AppCompatActivity implements SurfaceHolder.C
     private void initView() {
         holder = bindingView.readerView.getHolder();
         holder.addCallback(this);
+        ObserverFactory.init(this, callback);
+        ObservableFactory.init(this);
     }
 
 
@@ -83,4 +89,20 @@ public class ReaderActivity extends AppCompatActivity implements SurfaceHolder.C
             Toast.makeText(ReaderActivity.this, msg, Toast.LENGTH_SHORT).show();
         }
     };
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        return HandlerManager.getManager().getCurrentHandler().onKeyDown(keyCode, event);
+    }
+
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        return HandlerManager.getManager().getCurrentHandler().onKeyUp(keyCode, event);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Reader.closeBook();
+    }
 }

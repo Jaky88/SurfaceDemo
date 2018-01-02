@@ -23,7 +23,13 @@ public abstract class Book {
 
     public abstract boolean open(Context context, String path);
 
-    public abstract boolean close();
+    public boolean close(){
+        if(!page.getBitmap().isRecycled()){
+            page.getBitmap().recycle();
+        }
+        page = null;
+        return true;
+    }
 
     public abstract boolean gotoPage(Page page);
 
