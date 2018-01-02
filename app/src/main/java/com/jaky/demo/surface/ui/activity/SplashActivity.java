@@ -34,7 +34,6 @@ public class SplashActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         animate();
-
     }
 
     private void animate() {

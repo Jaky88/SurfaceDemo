@@ -9,14 +9,12 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.view.MotionEvent;
 import android.view.SurfaceHolder;
-import android.view.SurfaceView;
 import android.widget.Toast;
 
 import com.jaky.demo.surface.R;
-import com.jaky.demo.surface.data.book.Reader;
 import com.jaky.demo.surface.data.binding.ActivityReaderModel;
+import com.jaky.demo.surface.data.book.Reader;
 import com.jaky.demo.surface.databinding.ActivityReaderBinding;
 
 import java.io.File;
@@ -24,7 +22,6 @@ import java.io.File;
 public class ReaderActivity extends AppCompatActivity implements SurfaceHolder.Callback {
 
     private SurfaceHolder holder;
-    private SurfaceView mSurfaceView;
     private ActivityReaderBinding bindingView;
     private ActivityReaderModel mainModel;
     public static final String TAG = ReaderActivity.class.getSimpleName();
@@ -40,16 +37,10 @@ public class ReaderActivity extends AppCompatActivity implements SurfaceHolder.C
     }
 
     private void initView() {
-        mSurfaceView = (SurfaceView) findViewById(R.id.sv_content);
-        holder = mSurfaceView.getHolder();
+        holder = bindingView.readerView.getHolder();
         holder.addCallback(this);
     }
 
-
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        return super.onTouchEvent(event);
-    }
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
@@ -59,10 +50,10 @@ public class ReaderActivity extends AppCompatActivity implements SurfaceHolder.C
 
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-        Reader.init(new Rect(bindingView.svContent.getLeft(),
-                bindingView.svContent.getTop(),
-                bindingView.svContent.getLeft() + width,
-                bindingView.svContent.getTop() + height)
+        Reader.init(new Rect(bindingView.readerView.getLeft(),
+                bindingView.readerView.getTop(),
+                bindingView.readerView.getLeft() + width,
+                bindingView.readerView.getTop() + height)
         );
         mainModel.showCover(new File(TEST_FILE));
     }
@@ -82,10 +73,6 @@ public class ReaderActivity extends AppCompatActivity implements SurfaceHolder.C
             Canvas canvas = holder.lockCanvas();
             canvas.drawColor(Color.WHITE);
             if (canvas != null && bitmap != null && !bitmap.isRecycled()) {
-//                Rect srcArea = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
-//                Rect destArea = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
-//                bitmap = ImageBlurManager.doBlurJniArray(bitmap, ImageBlurManager.BLUR_RADIUS, false);
-//                canvas.drawBitmap(bitmap, srcArea, destArea, paint);
                 canvas.drawBitmap(bitmap, Reader.getVisableRect().left, Reader.getVisableRect().top, paint);
                 holder.unlockCanvasAndPost(canvas);
             }
