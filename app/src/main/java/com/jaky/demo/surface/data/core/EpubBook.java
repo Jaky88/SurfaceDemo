@@ -2,6 +2,7 @@ package com.jaky.demo.surface.data.core;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Rect;
 
 /**
  * Created by Jack on 2017/12/31.
@@ -9,8 +10,9 @@ import android.graphics.Bitmap;
 
 public class EpubBook extends Book{
 
-    public EpubBook(int visableWidth, int visableHeight) {
-        super(visableWidth, visableHeight);
+
+    public EpubBook(Rect rect) {
+        super(rect);
     }
 
     @Override
@@ -26,11 +28,6 @@ public class EpubBook extends Book{
     @Override
     public boolean gotoPage(Page page) {
         return false;
-    }
-
-    @Override
-    public int getTotalPage() {
-        return 0;
     }
 
     @Override

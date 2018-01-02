@@ -6,6 +6,9 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -42,7 +45,6 @@ import io.reactivex.schedulers.Schedulers;
 public class ActivityReaderModel {
 
     private static final String TAG = ActivityReaderModel.class.getSimpleName();
-    private static final String FILE_NAME = "test.pdf";
     private static final String SERVICE_PKG_NAME = "com.onyx.kreader";
     private static final String SERVICE_CLASS_NAME = "com.onyx.kreader.ui.ReaderMetadataService";
 
@@ -55,15 +57,9 @@ public class ActivityReaderModel {
         this.callback = callback;
     }
 
-    public void onGetThumbnail(View view) {
-        File file = new File("/sdcard/" + FILE_NAME);
-//        showCover(file);
-    }
-
     public void showCover(File file) {
-        File file1 = new File("/sdcard/" + FILE_NAME);
-        file = file1;
         if (!file.exists()) {
+            callback.showTost("File is not exists!");
             return;
         }
         getLoadCoverObservable(file).subscribeOn(Schedulers.io())
@@ -75,13 +71,6 @@ public class ActivityReaderModel {
         return Observable.create(new ObservableOnSubscribe<Bitmap>() {
             @Override
             public void subscribe(@NonNull ObservableEmitter e) throws Exception {
-//                Bitmap bitmap = loadCoverImpl(context, OnyxThumbnail.ThumbnailKind.Original, getFileMD5(file));
-//                if (bitmap == null) {
-//                    e.onNext(extractMetadata(context, file) ? loadCoverImpl(context, OnyxThumbnail.ThumbnailKind.Original, getFileMD5(file)) : null);
-//                } else {
-//                    e.onNext(bitmap);
-//                }
-                Log.d("", "=======getLoadCoverObservable=================");
                 if (Reader.openBook(context, file.getAbsolutePath())) {
                     e.onNext(Reader.getBook().getCurrentPage().getBitmap());
                 } else {
@@ -105,8 +94,6 @@ public class ActivityReaderModel {
                 if (bitmap == null) {
                     bitmap = BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher);
                 }
-                bitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
-                processBitmap(bitmap);
                 callback.updateSurface(bitmap);
                 bitmap.recycle();
             }
@@ -171,7 +158,11 @@ public class ActivityReaderModel {
     }
 
     private void processBitmap(Bitmap bitmap) {
-//        core.drawBitmap(bitmap);
+        Canvas canvas = new Canvas(bitmap);
+        Paint paint = new Paint();
+        paint.setColor(Color.BLACK);
+        paint.setTextSize(20);
+        canvas.drawText("这是一个PdfBook!", 20f, 20f, paint);
     }
 
     private class MetadataServiceConnection implements ServiceConnection {

@@ -7,21 +7,17 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.Display;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.view.ViewTreeObserver;
+import android.widget.Toast;
 
-import com.jaky.demo.surface.data.core.Page;
+import com.jaky.demo.surface.R;
 import com.jaky.demo.surface.data.core.Reader;
 import com.jaky.demo.surface.data.model.ActivityReaderModel;
-import com.jaky.demo.surface.R;
 import com.jaky.demo.surface.databinding.ActivityReaderBinding;
 import com.jaky.image.core.ImageBlurManager;
 
@@ -33,6 +29,8 @@ public class ReaderActivity extends AppCompatActivity implements SurfaceHolder.C
     private SurfaceView mSurfaceView;
     private ActivityReaderBinding bindingView;
     private ActivityReaderModel mainModel;
+    public static final String TAG = ReaderActivity.class.getSimpleName();
+    public static final String TEST_FILE = "/sdcard/test.pdf";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +45,6 @@ public class ReaderActivity extends AppCompatActivity implements SurfaceHolder.C
         mSurfaceView = (SurfaceView) findViewById(R.id.sv_content);
         holder = mSurfaceView.getHolder();
         holder.addCallback(this);
-
     }
 
 
@@ -64,8 +61,12 @@ public class ReaderActivity extends AppCompatActivity implements SurfaceHolder.C
 
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-        Reader.init(width, height);
-        mainModel.showCover(new File("/sdcard/test.pdf"));
+        Reader.init(new Rect(bindingView.svContent.getLeft(),
+                bindingView.svContent.getTop(),
+                bindingView.svContent.getLeft() + width,
+                bindingView.svContent.getTop() + height)
+        );
+        mainModel.showCover(new File(TEST_FILE));
     }
 
     @Override
@@ -75,6 +76,7 @@ public class ReaderActivity extends AppCompatActivity implements SurfaceHolder.C
 
     private SurfaceCallback callback = new SurfaceCallback() {
 
+
         @Override
         public void updateSurface(Bitmap bitmap) {
             Paint paint = new Paint();
@@ -82,12 +84,18 @@ public class ReaderActivity extends AppCompatActivity implements SurfaceHolder.C
             Canvas canvas = holder.lockCanvas();
             canvas.drawColor(Color.WHITE);
             if (canvas != null && bitmap != null && !bitmap.isRecycled()) {
-                Rect srcArea = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
-                Rect destArea = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
-                bitmap = ImageBlurManager.doBlurJniArray(bitmap, ImageBlurManager.BLUR_RADIUS, false);
-                canvas.drawBitmap(bitmap, srcArea, destArea, paint);
+//                Rect srcArea = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
+//                Rect destArea = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
+//                bitmap = ImageBlurManager.doBlurJniArray(bitmap, ImageBlurManager.BLUR_RADIUS, false);
+//                canvas.drawBitmap(bitmap, srcArea, destArea, paint);
+                canvas.drawBitmap(bitmap, Reader.getVisableRect().left, Reader.getVisableRect().top, paint);
                 holder.unlockCanvasAndPost(canvas);
             }
+        }
+
+        @Override
+        public void showTost(String msg) {
+            Toast.makeText(ReaderActivity.this, msg, Toast.LENGTH_SHORT).show();
         }
     };
 }

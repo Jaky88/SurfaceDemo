@@ -2,12 +2,17 @@ package com.jaky.demo.surface.data.core;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
+import android.graphics.PointF;
+import android.graphics.Rect;
 import android.util.Log;
 
 import com.jaky.mupdf.core.MuPDFCore;
+import com.jaky.utils.FileUtils;
+
+import java.io.File;
 
 /**
  * Created by Jack on 2017/12/31.
@@ -18,10 +23,10 @@ public class PdfBook extends Book {
 
     private MuPDFCore core = null;
 
-    public PdfBook(int visableWidth, int visableHeight) {
-        super(visableWidth, visableHeight);
-
+    public PdfBook(Rect rect) {
+        super(rect);
     }
+
 
     @Override
     public boolean open(Context context, String path) {
@@ -32,13 +37,12 @@ public class PdfBook extends Book {
             e.printStackTrace();
             return false;
         }
-        Log.d("", "=======drawPage=================");
+        setTotalPageNum(core.countPages());
         core.drawPage(page.getBitmap(), page.getPageNum(),
                 page.getWidth(), page.getHeight(),
-                0, 0,
-                0, 0,
-                core.new Cookie()
-        );
+                page.getLeft(), page.getTop(),
+                page.getWidth(), page.getHeight(),
+                core.new Cookie());
         return true;
     }
 
@@ -49,26 +53,18 @@ public class PdfBook extends Book {
 
     @Override
     public boolean gotoPage(Page page) {
+        core.drawPage(page.getBitmap(), page.getPageNum(),
+                page.getWidth(), page.getHeight(),
+                page.getLeft(), page.getTop(),
+                page.getWidth(), page.getHeight(),
+                core.new Cookie());
         return false;
     }
 
-    @Override
-    public int getTotalPage() {
-        return 0;
-    }
 
     @Override
     public void searchPage(Page page) {
 
     }
-
-    public void showPage(Bitmap bitmap) {
-        Canvas canvas = new Canvas(bitmap);
-        Paint paint = new Paint();
-        paint.setColor(Color.BLACK);
-        paint.setTextSize(20);
-        canvas.drawText("这是一个PdfBook!", 20f, 20f, paint);
-    }
-
 
 }

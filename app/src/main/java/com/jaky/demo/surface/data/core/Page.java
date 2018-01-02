@@ -1,6 +1,10 @@
 package com.jaky.demo.surface.data.core;
 
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Rect;
 
 /**
  * Created by Jack on 2018/1/1.
@@ -9,8 +13,11 @@ import android.graphics.Bitmap;
 public class Page {
 
     private Bitmap bitmap;
+    private Canvas canvas;
     private int pageNum;
     private int margin;
+    private int left;
+    private int top;
     private int width;
     private int height;
     private int font;
@@ -19,12 +26,20 @@ public class Page {
     private int lineSpacing;
     private int segmentSpacing;
     private int textSpacing;
+    private final Paint paint;
 
-    public Page(Bitmap bitmap, int pageNum, int width, int height) {
-        this.bitmap = bitmap;
+    public Page(Bitmap bmp, int pageNum, Rect rect) {
+        this.bitmap = bmp.copy(Bitmap.Config.ARGB_8888, true);
+        this.canvas = new Canvas(bitmap);
         this.pageNum = pageNum;
-        this.width = width;
-        this.height = height;
+        this.width = rect.width();
+        this.height = rect.height();
+        this.left = rect.left;
+        this.top = rect.top;
+        paint = new Paint();
+        paint.setColor(Color.BLACK);
+        paint.setStyle(Paint.Style.FILL);
+        canvas.drawColor(Color.WHITE);
     }
 
     public Bitmap getBitmap() {
@@ -113,5 +128,33 @@ public class Page {
 
     public void setTextSpacing(int textSpacing) {
         this.textSpacing = textSpacing;
+    }
+
+    public int getLeft() {
+        return left;
+    }
+
+    public void setLeft(int left) {
+        this.left = left;
+    }
+
+    public int getTop() {
+        return top;
+    }
+
+    public void setTop(int top) {
+        this.top = top;
+    }
+
+    public Canvas getCanvas() {
+        return canvas;
+    }
+
+    public void setCanvas(Canvas canvas) {
+        this.canvas = canvas;
+    }
+
+    public Paint getPaint() {
+        return paint;
     }
 }

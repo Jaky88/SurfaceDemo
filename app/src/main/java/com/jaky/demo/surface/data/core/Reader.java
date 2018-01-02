@@ -1,6 +1,7 @@
 package com.jaky.demo.surface.data.core;
 
 import android.content.Context;
+import android.graphics.Rect;
 import android.support.annotation.IntDef;
 import android.util.Log;
 import android.view.WindowManager;
@@ -18,21 +19,18 @@ import java.util.List;
 public class Reader {
 
     private static Book book = null;
-    private static int visableWidth;
-    private static int visableHeight;
+    private static Rect visableRect;
 
-    public static void init(int width, int height) {
-        visableWidth = width;
-        visableHeight = height;
+    public static void init(Rect rect) {
+        visableRect = rect;
     }
 
     public static boolean initBook(Context context, String path) {
-        if (visableWidth == 0 || visableHeight == 0) {
+        if (visableRect.width() == 0 || visableRect.height() == 0) {
             WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
             int width = wm.getDefaultDisplay().getWidth();
             int height = wm.getDefaultDisplay().getHeight();
-            visableWidth = width;
-            visableHeight = height;
+            visableRect = new Rect(0, 0, width, height);
         }
         String ext = FileUtils.getFileExtension(path);
         if(StringUtils.isNullOrEmpty(ext)){
@@ -41,9 +39,9 @@ public class Reader {
 
         List list = ReaderConfig.getConfig(context).getPdfBookCategory();
         if (ReaderConfig.getConfig(context).getPdfBookCategory().contains(ext)) {
-            book = new PdfBook(visableWidth, visableHeight);
+            book = new PdfBook(visableRect);
         } else if (ReaderConfig.getConfig(context).getPdfBookCategory().contains(ext)) {
-            book = new EpubBook(visableWidth, visableHeight);
+            book = new EpubBook(visableRect);
         }
         if (book == null) {
             return false;
@@ -63,12 +61,16 @@ public class Reader {
         return false;
     }
 
-    public static boolean turnPage(Page page) {
-        return book.gotoPage(page);
+    public static boolean gotoPage(int page) {
+        if(page >=1 && page <= book.getTotalPageNum()){
+            book.getPage().setPageNum(page);
+            return book.gotoPage(book.getPage());
+        }
+        return false;
     }
 
     public static boolean nextPage() {
-        if ((book.getCurrentPage().getPageNum() + 1) <= book.getTotalPage()) {
+        if ((book.getCurrentPage().getPageNum() + 1) <= book.getTotalPageNum()) {
             book.getCurrentPage().setPageNum(book.getCurrentPage().getPageNum() + 1);
             return book.gotoPage(book.getCurrentPage());
         }
@@ -91,19 +93,11 @@ public class Reader {
         Reader.book = book;
     }
 
-    public static int getVisableWidth() {
-        return visableWidth;
+    public static Rect getVisableRect() {
+        return visableRect;
     }
 
-    public static void setVisableWidth(int visableWidth) {
-        Reader.visableWidth = visableWidth;
-    }
-
-    public static int getVisableHeight() {
-        return visableHeight;
-    }
-
-    public static void setVisableHeight(int visableHeight) {
-        Reader.visableHeight = visableHeight;
+    public static void setVisableRect(Rect visableRect) {
+        Reader.visableRect = visableRect;
     }
 }

@@ -8,4 +8,5 @@ import android.graphics.Bitmap;
 
 public interface SurfaceCallback {
     void updateSurface(Bitmap bitmap);
+    void showTost(String msg);
 }

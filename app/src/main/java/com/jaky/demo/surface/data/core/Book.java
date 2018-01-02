@@ -2,14 +2,8 @@ package com.jaky.demo.surface.data.core;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-
-import com.jaky.demo.surface.data.config.ReaderConfig;
-import com.jaky.utils.FileUtils;
-
-import java.io.File;
+import android.graphics.Bitmap.Config;
+import android.graphics.Rect;
 
 /**
  * Created by jaky on 2017/12/29 0029.
@@ -18,23 +12,26 @@ import java.io.File;
 public abstract class Book {
 
     protected Page page;
+    protected int totalPageNum;
 
-    public Book(int visableWidth, int visableHeight) {
-        Bitmap bitmap = Bitmap.createBitmap(visableWidth, visableHeight, Bitmap.Config.ARGB_8888);
-        bitmap = bitmap.copy(Bitmap.Config.ARGB_8888,true);
-        Canvas canvas = new Canvas(bitmap);
-        canvas.drawColor(Color.WHITE);
-        page = new Page(bitmap, 2, bitmap.getWidth(), bitmap.getHeight());
+    public Book(Rect rect) {
+        if (page == null) {
+            Bitmap bitmap = Bitmap.createBitmap(rect.width(), rect.height(), Config.ARGB_8888);
+            page = new Page(bitmap, 0, rect);
+        }
     }
 
     public abstract boolean open(Context context, String path);
+
     public abstract boolean close();
-    public abstract boolean gotoPage (Page page);
-    public Page getCurrentPage (){
+
+    public abstract boolean gotoPage(Page page);
+
+    public Page getCurrentPage() {
         return page;
     }
-    public abstract int getTotalPage ();
-    public abstract void searchPage (Page page);
+
+    public abstract void searchPage(Page page);
 
     public Page getPage() {
         return page;
@@ -42,5 +39,13 @@ public abstract class Book {
 
     public void setPage(Page page) {
         this.page = page;
+    }
+
+    public int getTotalPageNum() {
+        return totalPageNum;
+    }
+
+    public void setTotalPageNum(int totalPageNum) {
+        this.totalPageNum = totalPageNum;
     }
 }
