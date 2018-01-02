@@ -9,17 +9,15 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.widget.Toast;
 
 import com.jaky.demo.surface.R;
-import com.jaky.demo.surface.data.core.Reader;
+import com.jaky.demo.surface.data.book.Reader;
 import com.jaky.demo.surface.data.model.ActivityReaderModel;
 import com.jaky.demo.surface.databinding.ActivityReaderBinding;
-import com.jaky.image.core.ImageBlurManager;
 
 import java.io.File;
 

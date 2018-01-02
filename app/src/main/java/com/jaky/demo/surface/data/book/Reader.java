@@ -1,9 +1,7 @@
-package com.jaky.demo.surface.data.core;
+package com.jaky.demo.surface.data.book;
 
 import android.content.Context;
 import android.graphics.Rect;
-import android.support.annotation.IntDef;
-import android.util.Log;
 import android.view.WindowManager;
 
 import com.jaky.demo.surface.data.config.ReaderConfig;

@@ -12,13 +12,9 @@ import android.graphics.Paint;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
-import android.view.View;
 
 import com.jaky.demo.surface.R;
-import com.jaky.demo.surface.data.core.Book;
-import com.jaky.demo.surface.data.core.Page;
-import com.jaky.demo.surface.data.core.Reader;
-import com.jaky.demo.surface.ui.ReaderActivity;
+import com.jaky.demo.surface.data.book.Reader;
 import com.jaky.demo.surface.ui.SurfaceCallback;
 import com.onyx.android.sdk.data.cms.OnyxCmsCenter;
 import com.onyx.android.sdk.data.cms.OnyxThumbnail;

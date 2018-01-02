@@ -1,7 +1,6 @@
-package com.jaky.demo.surface.data.core;
+package com.jaky.demo.surface.data.book;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.Rect;
 
 /**

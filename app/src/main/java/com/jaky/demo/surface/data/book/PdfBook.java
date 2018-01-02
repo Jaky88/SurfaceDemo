@@ -1,18 +1,9 @@
-package com.jaky.demo.surface.data.core;
+package com.jaky.demo.surface.data.book;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.Bitmap.Config;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.PointF;
 import android.graphics.Rect;
-import android.util.Log;
 
 import com.jaky.mupdf.core.MuPDFCore;
-import com.jaky.utils.FileUtils;
-
-import java.io.File;
 
 /**
  * Created by Jack on 2017/12/31.
