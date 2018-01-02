@@ -1,4 +1,4 @@
-package com.jaky.demo.surface.data.model;
+package com.jaky.demo.surface.data.binding;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -15,7 +15,7 @@ import android.util.Log;
 
 import com.jaky.demo.surface.R;
 import com.jaky.demo.surface.data.book.Reader;
-import com.jaky.demo.surface.ui.SurfaceCallback;
+import com.jaky.demo.surface.ui.activity.SurfaceCallback;
 import com.onyx.android.sdk.data.cms.OnyxCmsCenter;
 import com.onyx.android.sdk.data.cms.OnyxThumbnail;
 import com.onyx.android.sdk.data.util.FileUtil;

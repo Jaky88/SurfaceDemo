@@ -1,4 +1,4 @@
-package com.jaky.demo.surface.ui;
+package com.jaky.demo.surface.ui.activity;
 
 
 import android.databinding.DataBindingUtil;
@@ -16,7 +16,7 @@ import android.widget.Toast;
 
 import com.jaky.demo.surface.R;
 import com.jaky.demo.surface.data.book.Reader;
-import com.jaky.demo.surface.data.model.ActivityReaderModel;
+import com.jaky.demo.surface.data.binding.ActivityReaderModel;
 import com.jaky.demo.surface.databinding.ActivityReaderBinding;
 
 import java.io.File;

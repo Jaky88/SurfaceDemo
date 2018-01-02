@@ -1,4 +1,4 @@
-package com.jaky.demo.surface.ui;
+package com.jaky.demo.surface.ui.activity;
 
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
@@ -8,7 +8,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
 import com.jaky.demo.surface.R;
-import com.jaky.demo.surface.data.model.ActivitySplashModel;
+import com.jaky.demo.surface.data.binding.ActivitySplashModel;
 import com.jaky.demo.surface.databinding.ActivitySplashBinding;
 import com.onyx.android.sdk.data.util.ActivityUtil;
 

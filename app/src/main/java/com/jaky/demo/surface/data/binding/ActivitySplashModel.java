@@ -1,12 +1,9 @@
-package com.jaky.demo.surface.data.model;
+package com.jaky.demo.surface.data.binding;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 
 import com.jaky.demo.surface.R;
-import com.jaky.demo.surface.ui.SplashActivity;
 
 import java.util.Calendar;
 

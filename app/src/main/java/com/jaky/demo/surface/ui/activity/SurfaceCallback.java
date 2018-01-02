@@ -1,4 +1,4 @@
-package com.jaky.demo.surface.ui;
+package com.jaky.demo.surface.ui.activity;
 
 import android.graphics.Bitmap;
 

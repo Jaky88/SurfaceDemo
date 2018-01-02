@@ -20,7 +20,7 @@
 
 
         <activity
-            android:name="com.jaky.demo.surface.ui.SplashActivity"
+            android:name="com.jaky.demo.surface.ui.activity.SplashActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait">
             <intent-filter>
@@ -30,7 +30,7 @@
             </intent-filter>
 
         </activity>
-        <activity android:name=".ui.ReaderActivity">
+        <activity android:name=".ui.activity.ReaderActivity">
 
         </activity>
     </application>

@@ -1,4 +1,4 @@
-package com.jaky.demo.surface.data;
+package com.jaky.demo.surface.data.config;
 
 import android.Manifest;
 
