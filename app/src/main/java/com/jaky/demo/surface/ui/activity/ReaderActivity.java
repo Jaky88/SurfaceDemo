@@ -20,6 +20,7 @@ import com.jaky.demo.surface.databinding.ActivityReaderBinding;
 import com.jaky.demo.surface.ui.handler.HandlerManager;
 
 import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 
 
 public class ReaderActivity extends AppCompatActivity implements SurfaceHolder.Callback {
@@ -41,7 +42,10 @@ public class ReaderActivity extends AppCompatActivity implements SurfaceHolder.C
     private void initView() {
         holder = bindingView.readerView.getHolder();
         holder.addCallback(this);
-        RxBus.getInstance().register(Page.class).subscribe(getDrawPageComsumer());
+        RxBus.getInstance().register(Page.class)
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.computation())
+                .subscribe(getDrawPageComsumer());
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.jaky.demo.surface.ui.handler;
 
 import android.content.Context;
+import android.graphics.Matrix;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.KeyEvent;
@@ -62,23 +63,13 @@ public class BaseHandler extends GestureDetector.SimpleOnGestureListener impleme
     public boolean onSingleTapUp(MotionEvent e) {
         if (tryHitTest(e.getX(), e.getY())) {
         } else if (e.getX() > Reader.getVisableRect().width() * 2 / 3) {
-            Log.d("","=========nextPage=============");
-            nextPage();
+            Reader.nextPage();
         } else if (e.getX() < Reader.getVisableRect().width() / 3) {
-            Log.d("","=========prePage=============");
-            prePage();
+            Reader.prePage();
         } else {
 //            showReaderMenu(readerDataHolder);
         }
         return true;
-    }
-
-    private void prePage() {
-        Reader.prePage();
-    }
-
-    private void nextPage() {
-        Reader.nextPage();
     }
 
     @Override
@@ -93,7 +84,11 @@ public class BaseHandler extends GestureDetector.SimpleOnGestureListener impleme
 
     @Override
     public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-        return super.onFling(e1, e2, velocityX, velocityY);
+        if(e1.getX() <= e2.getX()){
+            return Reader.prePage();
+        } else {
+            return Reader.nextPage();
+        }
     }
 
     @Override
@@ -130,6 +125,10 @@ public class BaseHandler extends GestureDetector.SimpleOnGestureListener impleme
 
     @Override
     public boolean onScale(ScaleGestureDetector detector) {
+        float focusX = detector.getFocusX();
+        float focusY = detector.getFocusY();
+        Matrix transformationMatrix = new Matrix();
+        Matrix scaleMatrix = new Matrix();
         return false;
     }
 

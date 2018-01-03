@@ -27,16 +27,15 @@ public class SplashActivity extends AppCompatActivity {
         bindingView = DataBindingUtil.setContentView(this, R.layout.activity_splash);
         splashModel = new ActivitySplashModel(SplashActivity.this);
         bindingView.setSplashModel(splashModel);
-
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        animate();
+        playAnimate();
     }
 
-    private void animate() {
+    private void playAnimate() {
         bindingView.splashImage.setImageResource(splashModel.getBackgroundImageResID());
         Animation animation = AnimationUtils.loadAnimation(this, R.anim.splash);
         animation.setAnimationListener(new Animation.AnimationListener() {

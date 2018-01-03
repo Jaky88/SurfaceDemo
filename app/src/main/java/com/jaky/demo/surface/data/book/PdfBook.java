@@ -3,7 +3,6 @@ package com.jaky.demo.surface.data.book;
 import android.content.Context;
 import android.graphics.Rect;
 
-import com.jaky.demo.surface.data.rx.RxBus;
 import com.jaky.mupdf.core.MuPDFCore;
 
 /**

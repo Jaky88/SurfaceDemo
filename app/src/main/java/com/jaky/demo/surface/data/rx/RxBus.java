@@ -13,12 +13,12 @@ public class RxBus {
 
     private final FlowableProcessor<Object> mBus;
 
-    private RxBus() {
-        mBus = PublishProcessor.create().toSerialized();
-    }
-
     private static class Holder {
         private static RxBus instance = new RxBus();
+    }
+
+    private RxBus() {
+        mBus = PublishProcessor.create().toSerialized();
     }
 
     public static RxBus getInstance() {
