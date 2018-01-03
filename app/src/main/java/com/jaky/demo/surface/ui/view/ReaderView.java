@@ -1,14 +1,19 @@
 package com.jaky.demo.surface.ui.view;
 
 import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.SurfaceView;
 
-import com.jaky.demo.surface.ui.activity.SurfaceCallback;
+import com.jaky.demo.surface.data.book.Page;
+import com.jaky.demo.surface.data.book.Reader;
 import com.jaky.demo.surface.ui.handler.HandlerManager;
 
 /**
@@ -33,6 +38,8 @@ public class ReaderView extends SurfaceView {
         gestureDetector = new GestureDetector(getContext(), new MyOnGestureListener());
         scaleDetector = new ScaleGestureDetector(getContext(), new MyScaleGestureListener());
     }
+
+
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
@@ -110,6 +117,7 @@ public class ReaderView extends SurfaceView {
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.FROYO)
     class MyScaleGestureListener implements ScaleGestureDetector.OnScaleGestureListener {
 
         @Override
@@ -126,5 +134,15 @@ public class ReaderView extends SurfaceView {
         public void onScaleEnd(ScaleGestureDetector detector) {
             HandlerManager.getManager().getCurrentHandler().onScaleEnd(detector);
         }
+    }
+
+    private void update(Page page){
+        Paint paint = new Paint();
+        paint.setColor(Color.BLACK);
+        Canvas canvas = getHolder().lockCanvas();
+        canvas.drawColor(Color.WHITE);
+        canvas.drawBitmap(page.getBitmap(),
+                Reader.getVisableRect().left, Reader.getVisableRect().top, paint);
+        getHolder().unlockCanvasAndPost(canvas);
     }
 }

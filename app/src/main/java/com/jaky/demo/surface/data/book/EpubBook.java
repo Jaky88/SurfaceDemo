@@ -25,8 +25,8 @@ public class EpubBook extends Book{
     }
 
     @Override
-    public boolean gotoPage(Page page) {
-        return false;
+    protected Page drawPage(Page page) {
+        return null;
     }
 
     @Override

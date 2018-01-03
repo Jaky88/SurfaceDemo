@@ -2,10 +2,24 @@
   "debug": true,
   "pdfBookCategory": [
     "pdf",
-    "png"
+    "png",
+    "jpg",
+    "bmp"
   ],
   "epubBookCategory": [
+    "html",
     "epub",
-    "txt"
+    "epub3",
+    "txt",
+    "mobi",
+    "kf8",
+    "azw3",
+    "azw3r",
+    "azw3f",
+    "azw2",
+    "azw",
+    "apnx",
+    "chm",
+    "fb2"
   ]
 }

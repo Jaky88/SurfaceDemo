@@ -8,10 +8,6 @@ import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 
 import com.jaky.demo.surface.data.book.Reader;
-import com.jaky.demo.surface.data.rx.ObservableFactory;
-import com.jaky.demo.surface.data.rx.ObserverFactory;
-
-import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by jaky on 2018/1/2 0002.
@@ -78,15 +74,11 @@ public class BaseHandler extends GestureDetector.SimpleOnGestureListener impleme
     }
 
     private void prePage() {
-        ObservableFactory.getPrePageObservable().subscribeOn(Schedulers.io())
-                .observeOn(Schedulers.computation())
-                .subscribe(ObserverFactory.getUpdateSurfaceObserver());
+        Reader.prePage();
     }
 
     private void nextPage() {
-        ObservableFactory.getNextPageObservable().subscribeOn(Schedulers.io())
-                .observeOn(Schedulers.computation())
-                .subscribe(ObserverFactory.getUpdateSurfaceObserver());
+        Reader.nextPage();
     }
 
     @Override

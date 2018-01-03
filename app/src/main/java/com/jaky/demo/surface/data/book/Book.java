@@ -5,6 +5,9 @@ import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.Rect;
 
+import com.jaky.demo.surface.data.rx.RxBus;
+
+
 /**
  * Created by jaky on 2017/12/29 0029.
  */
@@ -31,7 +34,12 @@ public abstract class Book {
         return true;
     }
 
-    public abstract boolean gotoPage(Page page);
+    public boolean gotoPage(Page page){
+        RxBus.getInstance().post(drawPage(page));
+        return true;
+    }
+
+    protected abstract Page drawPage(Page page);
 
     public Page getCurrentPage() {
         return page;
