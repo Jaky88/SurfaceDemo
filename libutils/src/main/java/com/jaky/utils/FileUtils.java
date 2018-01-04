@@ -54,7 +54,7 @@ public class FileUtils {
     }
 
     public static void purgeDirectory(final File dir) {
-        for (File file: dir.listFiles()) {
+        for (File file : dir.listFiles()) {
             if (file.isFile()) {
                 file.delete();
             }
@@ -283,7 +283,7 @@ public class FileUtils {
                 '0', '1', '2', '3',
                 '4', '5', '6', '7',
                 '8', '9', 'a', 'b',
-                'c', 'd', 'e', 'f' };
+                'c', 'd', 'e', 'f'};
 
         char str[] = new char[out.length * 2];
         for (int i = 0; i < out.length; i++) {
@@ -307,7 +307,7 @@ public class FileUtils {
 
             // TODO: what about an empty file?
             if (fileSize <= (digestBlockLength * 3)) {
-                digestBuffer = new byte[(int)fileSize];
+                digestBuffer = new byte[(int) fileSize];
                 rf.read(digestBuffer);
             } else {
                 // 3 digest blocks, head, mid, end
@@ -319,8 +319,7 @@ public class FileUtils {
                 rf.seek(fileSize - digestBlockLength);
                 rf.read(digestBuffer, 2 * digestBlockLength, digestBlockLength);
             }
-        }
-        finally {
+        } finally {
             if (rf != null) {
                 rf.close();
             }
@@ -371,6 +370,18 @@ public class FileUtils {
             return true;
         }
         return false;
+    }
+
+    public static boolean deleteDir(final String folder) {
+        File dir = new File(folder);
+        if (dir.isDirectory())
+            for (File file : dir.listFiles()) {
+                if (!deleteDir(file.getAbsolutePath())) {
+                    return false;
+                }
+            }
+
+        return dir.delete();
     }
 
     public static boolean ensureFileExists(String path) {
@@ -492,7 +503,7 @@ public class FileUtils {
                     file.getParentFile().mkdirs();
                 }
                 if (!file.createNewFile()) {
-                    Log.d(TAG,"======createNewFile===failure====");
+                    Log.d(TAG, "======createNewFile===failure====");
                     return false;
                 }
             }
@@ -504,7 +515,7 @@ public class FileUtils {
 
             return file.exists() && file.length() > 0;
         } catch (Exception e) {
-            Log.d(TAG,"============="+e.getMessage());
+            Log.d(TAG, "=============" + e.getMessage());
             return false;
         } finally {
             closeQuietly(fos);
@@ -608,7 +619,7 @@ public class FileUtils {
 
     public static String getPath(Context context, Uri uri) {
         if ("content".equalsIgnoreCase(uri.getScheme())) {
-            String[] projection = { "_data" };
+            String[] projection = {"_data"};
             Cursor cursor = null;
             try {
                 cursor = context.getContentResolver().query(uri, projection, null, null, null);
