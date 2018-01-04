@@ -10,6 +10,8 @@ import android.util.Log;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.Closeable;
 import java.io.File;
@@ -23,9 +25,13 @@ import java.io.RandomAccessFile;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 /**
  * Created by jaky on 2017/12/4 0004.
@@ -617,6 +623,63 @@ public class FileUtils {
             return uri.getPath();
         }
         return null;
+    }
+
+    public static void unzip(String zipPath, String destDir) throws IOException {
+        int BUFFER = 2048;
+        List zipFiles = new ArrayList();
+        File sourceZipFile = new File(zipPath);
+        File unzipDestinationDirectory = new File(destDir);
+        unzipDestinationDirectory.mkdir();
+
+        ZipFile zipFile;
+        zipFile = new ZipFile(sourceZipFile, ZipFile.OPEN_READ);
+        Enumeration zipFileEntries = zipFile.entries();
+
+        // Process each entry
+        while (zipFileEntries.hasMoreElements()) {
+
+            ZipEntry entry = (ZipEntry) zipFileEntries.nextElement();
+            String currentEntry = entry.getName();
+            File destFile = new File(unzipDestinationDirectory, currentEntry);
+
+            if (currentEntry.endsWith(".zip")) {
+                zipFiles.add(destFile.getAbsolutePath());
+            }
+
+            File destinationParent = destFile.getParentFile();
+            destinationParent.mkdirs();
+
+            if (!entry.isDirectory()) {
+                BufferedInputStream is = new BufferedInputStream(
+                        zipFile.getInputStream(entry));
+                int currentByte;
+                // buffer for writing file
+                byte data[] = new byte[BUFFER];
+
+                FileOutputStream fos = new FileOutputStream(destFile);
+                BufferedOutputStream dest = new BufferedOutputStream(fos,
+                        BUFFER);
+
+                while ((currentByte = is.read(data, 0, BUFFER)) != -1) {
+                    dest.write(data, 0, currentByte);
+                }
+                dest.flush();
+                dest.close();
+                is.close();
+
+            }
+
+        }
+        zipFile.close();
+
+        for (Iterator iter = zipFiles.iterator(); iter.hasNext(); ) {
+            String zipName = (String) iter.next();
+            unzip(zipName, destDir
+                    + File.separatorChar
+                    + zipName.substring(0,
+                    zipName.lastIndexOf(".zip")));
+        }
     }
 
 }

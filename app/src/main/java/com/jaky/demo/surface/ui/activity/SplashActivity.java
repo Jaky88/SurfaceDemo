@@ -46,6 +46,7 @@ public class SplashActivity extends AppCompatActivity {
             @Override
             public void onAnimationEnd(Animation animation) {
                 ActivityUtil.startActivitySafely(SplashActivity.this, new Intent(SplashActivity.this, ReaderActivity.class));
+                SplashActivity.this.finish();
             }
 
             @Override
@@ -53,6 +54,7 @@ public class SplashActivity extends AppCompatActivity {
             }
         });
         bindingView.splashImage.startAnimation(animation);
+
     }
 
 }

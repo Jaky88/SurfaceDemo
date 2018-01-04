@@ -2,13 +2,17 @@ package com.jaky.demo.surface.data.book;
 
 import android.content.Context;
 import android.graphics.Rect;
+import android.util.Log;
+
+import com.jaky.epub.core.EpubCore;
 
 /**
  * Created by Jack on 2017/12/31.
  */
 
 public class EpubBook extends Book{
-
+    private String folder;
+    private EpubCore core = null;
 
     public EpubBook(Rect rect) {
         super(rect);
@@ -16,6 +20,14 @@ public class EpubBook extends Book{
 
     @Override
     public boolean open(Context context, String path) {
+        folder = "/sdcard/epubtemp";
+        try {
+            core = new EpubCore(context, path, folder);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+        gotoPage(page);
         return false;
     }
 
@@ -26,7 +38,11 @@ public class EpubBook extends Book{
 
     @Override
     protected Page drawPage(Page page) {
-        return null;
+        core.drawPage(page.getBitmap(), page.getPageNum(),
+                page.getWidth(), page.getHeight(),
+                page.getLeft(), page.getTop(),
+                page.getWidth(), page.getHeight());
+        return page;
     }
 
     @Override

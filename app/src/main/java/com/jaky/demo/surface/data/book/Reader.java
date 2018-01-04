@@ -2,6 +2,7 @@ package com.jaky.demo.surface.data.book;
 
 import android.content.Context;
 import android.graphics.Rect;
+import android.util.Log;
 import android.view.WindowManager;
 
 import com.jaky.demo.surface.data.config.ReaderConfig;
@@ -35,10 +36,10 @@ public class Reader {
             return false;
         }
 
-        List list = ReaderConfig.getConfig(context).getPdfBookCategory();
         if (ReaderConfig.getConfig(context).getPdfBookCategory().contains(ext)) {
             book = new PdfBook(visableRect);
-        } else if (ReaderConfig.getConfig(context).getPdfBookCategory().contains(ext)) {
+        } else if (ReaderConfig.getConfig(context).getEpubBookCategory().contains(ext)) {
+            Log.d("","========initBook========");
             book = new EpubBook(visableRect);
         }
         if (book == null) {

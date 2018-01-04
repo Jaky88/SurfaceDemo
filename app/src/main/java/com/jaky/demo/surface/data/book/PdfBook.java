@@ -34,6 +34,16 @@ public class PdfBook extends Book {
     }
 
     @Override
+    public boolean close() {
+        core.onDestroy();
+        if(!page.getBitmap().isRecycled()){
+            page.getBitmap().recycle();
+        }
+        page = null;
+        return true;
+    }
+
+    @Override
     protected Page drawPage(Page page) {
         core.drawPage(page.getBitmap(), page.getPageNum(),
                 page.getWidth(), page.getHeight(),

@@ -8,6 +8,7 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.SurfaceHolder;
 
@@ -28,7 +29,7 @@ public class ReaderActivity extends AppCompatActivity implements SurfaceHolder.C
     private SurfaceHolder holder;
     private ActivityReaderBinding bindingView;
     private ActivityReaderModel mainModel;
-    public static final String TEST_FILE = "/sdcard/test.pdf";
+    public static final String TEST_FILE = "/sdcard/test.epub";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +51,6 @@ public class ReaderActivity extends AppCompatActivity implements SurfaceHolder.C
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
-
     }
 
     @Override

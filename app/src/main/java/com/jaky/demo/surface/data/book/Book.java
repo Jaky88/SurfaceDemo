@@ -20,6 +20,7 @@ public abstract class Book {
     public Book(Rect rect) {
         if (page == null) {
             Bitmap bitmap = Bitmap.createBitmap(rect.width(), rect.height(), Config.ARGB_8888);
+            bitmap = bitmap.copy(Config.ARGB_8888, true);
             page = new Page(bitmap, 0, rect);
         }
     }
@@ -27,14 +28,14 @@ public abstract class Book {
     public abstract boolean open(Context context, String path);
 
     public boolean close(){
-        if(!page.getBitmap().isRecycled()){
+        if(!page.getBitmap().isRecycled()) {
             page.getBitmap().recycle();
         }
         page = null;
         return true;
     }
 
-    public boolean gotoPage(Page page){
+    public boolean gotoPage(Page page) {
         RxBus.getInstance().post(drawPage(page));
         return true;
     }
