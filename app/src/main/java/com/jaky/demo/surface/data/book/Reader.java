@@ -39,7 +39,6 @@ public class Reader {
         if (ReaderConfig.getConfig(context).getPdfBookCategory().contains(ext)) {
             book = new PdfBook(visableRect);
         } else if (ReaderConfig.getConfig(context).getEpubBookCategory().contains(ext)) {
-            Log.d("","========initBook========");
             book = new EpubBook(visableRect);
         }
         if (book == null) {

@@ -20,7 +20,7 @@ public class EpubBook extends Book{
 
     @Override
     public boolean open(Context context, String path) {
-        folder = "/sdcard/epubtemp";
+        folder = "1";
         try {
             core = new EpubCore(context, path, folder);
         } catch (Exception e) {

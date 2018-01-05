@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.SurfaceHolder;
+import android.widget.TextView;
 
 import com.jaky.demo.surface.R;
 import com.jaky.demo.surface.data.binding.ActivityReaderModel;
@@ -38,6 +39,7 @@ public class ReaderActivity extends AppCompatActivity implements SurfaceHolder.C
         mainModel = new ActivityReaderModel(ReaderActivity.this);
         bindingView.setMainModel(mainModel);
         initView();
+
     }
 
     private void initView() {
@@ -55,8 +57,9 @@ public class ReaderActivity extends AppCompatActivity implements SurfaceHolder.C
 
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-        Reader.init(new Rect(bindingView.readerView.getLeft(),
-                bindingView.readerView.getTop(),
+        Log.d("","===================="+bindingView.readerView.getY());
+        Reader.init(new Rect((int) bindingView.readerView.getX(),
+                (int) bindingView.readerView.getY(),
                 bindingView.readerView.getLeft() + width,
                 bindingView.readerView.getTop() + height)
         );

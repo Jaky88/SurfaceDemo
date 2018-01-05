@@ -25,14 +25,18 @@ THE SOFTWARE.
 package com.jaky.epub.core;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Picture;
 import android.graphics.Rect;
 import android.os.Environment;
+import android.print.PrintDocumentAdapter;
 import android.util.Log;
+import android.view.View;
 import android.webkit.WebView;
 import android.widget.TextView;
 
@@ -43,9 +47,11 @@ import com.jaky.utils.StringUtils;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -74,11 +80,12 @@ public class EpubCore {
     private String pathOPF;
     private static Context context;
 
-    private static String location = Environment.getExternalStorageDirectory() + "/epubtemp/";
+    private static String location = Environment.getExternalStorageDirectory() + "/epubtemp";
     private String fileName;
     private FileInputStream in;
     private String actualCSS = "";
     private String[][] audio;
+    private String url;
 
     public EpubCore(Context context, String fileName, String folder) throws Exception {
         this.context = context;
@@ -105,11 +112,11 @@ public class EpubCore {
 
         spineElementPaths = new String[spineElements.size()];
         for (int i = 0; i < spineElements.size(); ++i) {
-            this.spineElementPaths[i] = "file://" + location + decompressedFolder + "/" + pathOPF + "/" + spineElements.get(i);
+            spineElementPaths[i] = "file://" + location + decompressedFolder + "/" + pathOPF + "/" + spineElements.get(i);
         }
 
         if (spineElements.size() > 0) {
-            gotoPage(0);
+            url = gotoPage(0);
         }
         createTocFile();
     }
@@ -303,36 +310,53 @@ public class EpubCore {
             spineElement = spineElement + this.availableLanguages.get(lang) + extension;
         }
 
-        this.currentPage = spineElement;
+        currentPage = spineElement;
         audioExtractor(currentPage);
         return spineElement;
     }
 
     public void drawPage(Bitmap bm, int page, int pageW, int pageH, int patchX, int patchY, int patchW, int patchH) {
+        Log.d("", "=========drawPage======="+url);
         try {
-            String content = gotoPage(page);
-            gotoPage(content);
-            WebView web = new WebView(context);
-//            addCSS(web.getSettings().);
-            web.loadUrl(content);
-
-            Bitmap bitmap = BitmapFactory.decodeStream(book.getCoverImage().getInputStream());
             Canvas canvas = new Canvas(bm);
             Paint paint = new Paint();
             paint.setColor(Color.BLACK);
-            paint.setTextSize(10f);
+            paint.setTextSize(40f);
             paint.setStyle(Paint.Style.FILL);
-            canvas.drawBitmap(bitmap, new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight()),
-                    new Rect(0, 0, bm.getWidth(), bm.getHeight()), paint);
-            TextView v = new TextView(context);
-            v.setText("Core");
-            v.draw(canvas);
+            URL fileUrl = new URL(url);
+            canvas.drawText(FileUtils.readContentFromFile(fileUrl.getFile()), patchX,patchY,paint);
+
+
+            WebView web = new WebView(context);
+            web.loadUrl(url);
+//            bm = convertViewToBitmap(web);
 //            web.draw(canvas);
-            Log.d("", "==========web.getTitle==========" + book.getTitle());
+//            Log.d("", "==========web.getTitle==========" + web.);
+
+//            Bitmap bitmap = BitmapFactory.decodeStream(book.getCoverImage().getInputStream());
+
 //            canvas.drawText(content, patchX, patchY, paint);
+//            saveImage();
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public static Bitmap convertViewToBitmap(View view) {
+        view.destroyDrawingCache();
+        view.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
+        view.layout(0, 0, view.getMeasuredWidth(), view.getMeasuredHeight());
+        view.setDrawingCacheEnabled(true);
+        return view.getDrawingCache(true);
+    }
+
+    public void saveImage() {
+        WebView webView = new WebView(context);
+        webView.loadUrl(url);
+        Picture picture = webView.capturePicture();
+        Bitmap b = Bitmap.createBitmap(picture.getWidth(), picture.getHeight(), Bitmap.Config.ARGB_8888);
+        FileUtils.saveBitmapToFile(b, new File("/sdcard/web.jpg"), Bitmap.CompressFormat.JPEG,90);
     }
 
     public String goToNextChapter() throws Exception {
